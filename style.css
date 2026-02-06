@@ -1,35 +1,29 @@
-/* --- CSS Variables (Light Mode Default) --- */
+/* --- Core Styles --- */
 :root {
-  --bg-color: #ffffff;
-  --text-color: #222222;
-  --accent-color: #000000;
-  --circle-bg: #f0f0f0;
-  --circle-text: #222222;
-  --modal-bg: #ffffff;
-  --modal-overlay: rgba(255, 255, 255, 0.8);
-  --border-color: #ccc;
-  --btn-bg: #f0f0f0;
+  --bg-color: #121212;
+  --text-color: #ffffff;
+  --accent-dim: rgba(255, 255, 255, 0.05);
+  --accent-bright: rgba(255, 255, 255, 0.1);
+  --modal-bg: #1e1e1e;
+  --input-bg: #2a2a2a;
 }
 
-/* --- Auto-Detect Dark Mode --- */
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   :root {
-    --bg-color: #1a1a1a;
-    --text-color: #eeeeee;
-    --accent-color: #ffffff;
-    --circle-bg: #333333;
-    --circle-text: #ffffff;
-    --modal-bg: #2a2a2a;
-    --modal-overlay: rgba(0, 0, 0, 0.7);
-    --border-color: #444;
-    --btn-bg: #333;
+    --bg-color: #fcfcfc;
+    --text-color: #111111;
+    --accent-dim: rgba(0, 0, 0, 0.03);
+    --accent-bright: rgba(0, 0, 0, 0.08);
+    --modal-bg: #ffffff;
+    --input-bg: #f0f0f0;
   }
 }
 
-/* --- Base --- */
 body {
   font-family:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
     sans-serif;
   background-color: var(--bg-color);
   color: var(--text-color);
@@ -42,109 +36,80 @@ body {
 
 .container {
   width: 100%;
-  max-width: 700px;
-  padding: 20px;
+  max-width: 800px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* --- Top Right Hidden Controls --- */
-.controls-area {
-  position: fixed;
-  top: 0;
-  right: 0;
-  padding: 20px;
-  opacity: 0; /* Hidden by default */
-  transition: opacity 0.3s ease;
+header h1 {
+  font-size: 3rem;
+  font-weight: 200;
+  margin-bottom: 60px;
+  letter-spacing: -1px;
 }
 
-.controls-area:hover {
-  opacity: 1; /* Visible on hover */
-}
-
-.controls-area button {
-  background: var(--btn-bg);
-  border: 1px solid var(--border-color);
-  color: var(--text-color);
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-
-/* --- Header --- */
-header {
-  margin-bottom: 50px;
-  padding-bottom: 20px;
-  text-align: left; /* Aligns greeting to the start of the grid */
-}
-
-h1 {
-  font-size: 2.5rem;
-  font-weight: 300;
-  margin: 0;
-}
-
-/* --- Grid Layout --- */
+/* --- 3 Column Grid --- */
 .link-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 60px;
-  row-gap: 25px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  width: 100%;
 }
 
-/* --- Minimalist Links (No Hover Movement) --- */
 .link-item {
   text-decoration: none;
   color: var(--text-color);
   display: flex;
+  flex-direction: column;
   align-items: center;
-  padding: 5px 0;
+  gap: 12px;
   position: relative;
-  /* Removed transform transition */
 }
 
 .circle-number {
-  width: 32px;
-  height: 32px;
-  background-color: var(--circle-bg);
-  color: var(--circle-text);
+  width: 42px;
+  height: 42px;
+  background-color: var(--accent-dim);
+  border: 1px solid var(--accent-bright);
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-weight: bold;
-  font-size: 0.9rem;
-  margin-right: 15px;
-  flex-shrink: 0;
-}
-
-.link-text {
-  font-size: 1.2rem;
   font-weight: 500;
 }
 
-/* Delete Button */
-.delete-btn {
-  margin-left: auto;
-  background: none;
-  border: none;
-  color: var(--text-color);
+.link-text {
+  font-size: 0.95rem;
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+/* --- Hidden Controls --- */
+.controls-area {
+  position: fixed;
+  top: 20px;
+  right: 20px;
   opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.controls-area:hover {
+  opacity: 1;
+}
+
+#add-btn {
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-bright);
+  color: var(--text-color);
+  padding: 8px 16px;
+  border-radius: 20px;
   cursor: pointer;
-  font-size: 1.2rem;
-  padding: 0 10px;
-  transition: opacity 0.2s;
+  font-size: 0.8rem;
 }
 
-.link-item:hover .delete-btn {
-  opacity: 0.4;
-}
-
-.delete-btn:hover {
-  opacity: 1 !important;
-  color: #ff4444;
-}
-
-/* --- Modal --- */
+/* --- THE RESTORED MODAL --- */
 #add-modal {
   display: none;
   position: fixed;
@@ -152,11 +117,11 @@ h1 {
   left: 0;
   width: 100%;
   height: 100%;
-  background: var(--modal-overlay);
-  backdrop-filter: blur(5px);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
   justify-content: center;
   align-items: center;
-  z-index: 100;
+  z-index: 1000;
 }
 
 #add-modal.active {
@@ -166,30 +131,27 @@ h1 {
 .modal-content {
   background: var(--modal-bg);
   padding: 30px;
-  border-radius: 12px;
+  border-radius: 16px;
   width: 320px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
 .modal-content h3 {
-  margin: 0 0 10px 0;
-  font-weight: 600;
+  margin: 0 0 5px 0;
+  font-weight: 500;
 }
 
 input {
   padding: 12px;
-  border: 1px solid var(--border-color);
-  background: transparent;
+  border: none;
+  background: var(--input-bg);
   color: var(--text-color);
-  border-radius: 6px;
+  border-radius: 8px;
   outline: none;
-}
-
-input:focus {
-  border-color: var(--accent-color);
+  font-size: 0.9rem;
 }
 
 .modal-actions {
@@ -200,15 +162,42 @@ input:focus {
 }
 
 .modal-actions button {
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
+  padding: 10px 18px;
+  border-radius: 8px;
   border: none;
-  background: var(--circle-bg);
-  color: var(--text-color);
+  cursor: pointer;
+  font-weight: 500;
 }
 
-.modal-actions .primary-btn {
-  background: var(--accent-color);
-  color: var(--bg-color);
+#cancel-btn {
+  background: transparent;
+  color: var(--text-color);
+  opacity: 0.6;
+}
+.primary-btn {
+  background: #007aff;
+  color: white;
+} /* Blue accent for save */
+
+/* Delete Button */
+.delete-btn {
+  position: absolute;
+  top: -5px;
+  right: 15%;
+  background: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 12px;
+  cursor: pointer;
+  opacity: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.link-item:hover .delete-btn {
+  opacity: 1;
 }
