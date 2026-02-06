@@ -1,19 +1,20 @@
 # Minimalist Firefox Startpage
 
 A clean, high-performance, and distraction-free "New Tab" page for Firefox. Built with a 3-column grid, dynamic time-based greetings, and keyboard-driven navigation.
+
 ✨ Features
 
-    - 3-Column Layout: Perfectly centered and symmetrical grid.
+1. 3-Column Layout: Perfectly centered and symmetrical grid.
 
-    - Dynamic Greeting: Displays "Good Morning/Afternoon/Evening" based on system time.
+2. Dynamic Greeting: Displays "Good Morning/Afternoon/Evening" based on system time.
 
-    - Auto-Theme: Automatically detects and matches your system's light or dark mode.
+3. Auto-Theme: Automatically detects and matches your system's light or dark mode.
 
-    - Keyboard Navigation: Press keys 1 through 9 to instantly open your shortcuts.
+4. Keyboard Navigation: Press keys 1 through 9 to instantly open your shortcuts.
 
-    - Minimalist UI: Links are displayed as text with numbers in elegant circles—no borders, no clutter.
+5. Minimalist UI: Links are displayed as text with numbers in elegant circles—no borders, no clutter.
 
-    - Hidden Controls: Add or remove links via a hidden settings menu in the top-right corner.
+6. Hidden Controls: Add or remove links via a hidden settings menu in the top-right corner.
 
 ## 🚀 Setup Instructions
 1. Host the Page
