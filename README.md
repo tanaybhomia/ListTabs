@@ -1,5 +1,7 @@
 # Minimalist Firefox Startpage
 
+![alt text](image.png)
+
 A clean, high-performance, and distraction-free "New Tab" page for Firefox. Built with a 3-column grid, dynamic time-based greetings, and keyboard-driven navigation.
 
 ✨ Features

@@ -1,37 +1,45 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>New Tab</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
     <div class="controls-area">
-        <button id="add-btn" aria-label="Add New Link">Add URL</button>
+      <button id="add-btn" aria-label="Add New Link">Add URL</button>
     </div>
 
     <div class="container">
-        <header>
-            <h1 id="greeting">Hello</h1>
-        </header>
+      <header>
+        <h1 id="greeting">Hello</h1>
+      </header>
 
-        <div id="link-grid" class="link-grid"></div>
+      <div id="link-grid" class="link-grid"></div>
     </div>
 
     <div id="add-modal">
-        <div class="modal-content">
-            <h3>Add Shortcut</h3>
-            <input type="text" id="input-title" placeholder="Name (e.g. Reddit)">
-            <input type="url" id="input-url" placeholder="URL (e.g. reddit.com)">
-            <div class="modal-actions">
-                <button id="cancel-btn">Cancel</button>
-                <button id="save-btn" class="primary-btn">Save</button>
-            </div>
+      <div class="modal-content">
+        <h3>Add Shortcut</h3>
+        <input type="text" id="input-title" placeholder="Name (e.g. Reddit)" />
+        <input type="url" id="input-url" placeholder="URL (e.g. reddit.com)" />
+        <div class="modal-actions">
+          <button id="cancel-btn">Cancel</button>
+          <button id="save-btn" class="primary-btn">Save</button>
         </div>
+      </div>
+    </div>
+
+    <div id="search-overlay">
+      <div class="search-container">
+        <input type="text" id="search-input" placeholder="Search Google..." />
+        <div class="search-hint">
+          Press <span>Enter</span> to Search | <span>Esc</span> to Cancel
+        </div>
+      </div>
     </div>
 
     <script src="script.js"></script>
-</body>
+  </body>
 </html>

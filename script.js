@@ -114,3 +114,42 @@ render();
 
 // Update greeting every minute
 setInterval(updateGreeting, 60000);
+
+// Add these to your existing DOM elements at the top
+const searchOverlay = document.getElementById("search-overlay");
+const searchInput = document.getElementById("search-input");
+
+// Handle Search logic
+function performSearch() {
+  const query = searchInput.value.trim();
+  if (query) {
+    window.location.href = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+  }
+}
+
+// Update your keydown listener
+document.addEventListener("keydown", (e) => {
+  // If we are typing in an input already, don't trigger hotkeys
+  if (e.target.tagName === "INPUT") {
+    if (e.key === "Enter" && e.target.id === "search-input") performSearch();
+    if (e.key === "Escape") {
+      searchOverlay.classList.remove("active");
+      searchInput.value = "";
+    }
+    return;
+  }
+
+  // Toggle Search with 's'
+  if (e.key.toLowerCase() === "s") {
+    e.preventDefault();
+    searchOverlay.classList.add("active");
+    searchInput.focus();
+  }
+
+  // Existing Number Hotkeys (1-9)
+  const key = parseInt(e.key);
+  if (!isNaN(key) && key > 0 && key <= 9) {
+    const index = key - 1;
+    if (links[index]) window.location.href = links[index].url;
+  }
+});

@@ -20,11 +20,11 @@
 }
 
 body {
+  /* The Apple System Font Stack */
   font-family:
-    "Inter",
-    -apple-system,
-    BlinkMacSystemFont,
-    sans-serif;
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+    "Helvetica Neue", Helvetica, Arial, sans-serif;
+
   background-color: var(--bg-color);
   color: var(--text-color);
   margin: 0;
@@ -32,6 +32,18 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+
+  /* This makes text look crisp like on a Mac */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Optional: Make the greeting look even more "Apple-like" with thinner weight */
+header h1 {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+  font-size: 3.5rem;
+  font-weight: 200; /* Apple loves ultra-light weights for big headings */
+  letter-spacing: -0.015em;
 }
 
 .container {
@@ -200,4 +212,54 @@ input {
 
 .link-item:hover .delete-btn {
   opacity: 1;
+}
+
+/* --- Search Overlay --- */
+#search-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-color); /* Matches your theme */
+  z-index: 2000;
+  justify-content: center;
+  align-items: center;
+}
+
+#search-overlay.active {
+  display: flex;
+}
+
+.search-container {
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+}
+
+#search-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--accent-bright);
+  color: var(--text-color);
+  font-size: 2.5rem;
+  font-weight: 200;
+  text-align: center;
+  outline: none;
+  padding: 10px;
+}
+
+.search-hint {
+  margin-top: 20px;
+  font-size: 0.8rem;
+  color: var(--secondary-text);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.search-hint span {
+  color: var(--text-color);
+  font-weight: bold;
 }
