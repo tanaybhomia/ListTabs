@@ -67,9 +67,22 @@ function saveAndRender() {
 }
 
 // --- Search Logic ---
+// --- Smart Search/Navigate Logic ---
 function performSearch() {
   const query = searchInput.value.trim();
-  if (query) {
+  if (!query) return;
+
+  // Check if it's a direct URL (contains a dot and no spaces) or starts with http
+  const isDirectURL = query.includes(".") && !query.includes(" ");
+  const hasProtocol =
+    query.startsWith("http://") || query.startsWith("https://");
+
+  if (hasProtocol) {
+    window.location.href = query;
+  } else if (isDirectURL) {
+    window.location.href = "https://" + query;
+  } else {
+    // Fallback to Google Search
     window.location.href = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
   }
 }
