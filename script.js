@@ -2,25 +2,21 @@ const defaultLinks = [
   { title: "Google", url: "https://google.com" },
   { title: "YouTube", url: "https://youtube.com" },
   { title: "GitHub", url: "https://github.com" },
-  { title: "Reddit", url: "https://reddit.com" },
 ];
 
+const defaultBangs = {
+  "!y": "https://www.youtube.com/results?search_query=",
+  "!gh": "https://github.com/search?q=",
+  "!w": "https://en.wikipedia.org/wiki/Special:Search?search=",
+};
+
 let links = JSON.parse(localStorage.getItem("myLinks")) || defaultLinks;
+let customBangs = JSON.parse(localStorage.getItem("myBangs")) || {};
 
 const grid = document.getElementById("link-grid");
 const modal = document.getElementById("add-modal");
-const greetingEl = document.getElementById("greeting");
 const searchOverlay = document.getElementById("search-overlay");
 const searchInput = document.getElementById("search-input");
-
-function updateGreeting() {
-  const hour = new Date().getHours();
-  let text = "Hello";
-  if (hour >= 5 && hour < 12) text = "Good Morning";
-  else if (hour >= 12 && hour < 18) text = "Good Afternoon";
-  else text = "Good Evening";
-  greetingEl.textContent = text;
-}
 
 function render() {
   grid.innerHTML = "";
@@ -47,9 +43,19 @@ function render() {
 function performSearch() {
   const query = searchInput.value.trim();
   if (!query) return;
+  const parts = query.split(" ");
+  const firstWord = parts[0].toLowerCase();
+  const searchTerm = parts.slice(1).join(" ");
+  const allBangs = { ...defaultBangs, ...customBangs };
 
-  const isDirectURL = query.includes(".") && !query.includes(" ");
-  if (query.startsWith("http") || isDirectURL) {
+  if (allBangs[firstWord]) {
+    window.location.href = searchTerm
+      ? allBangs[firstWord] + encodeURIComponent(searchTerm)
+      : new URL(allBangs[firstWord]).origin;
+    return;
+  }
+  const isURL = query.includes(".") && !query.includes(" ");
+  if (query.startsWith("http") || isURL) {
     window.location.href = query.startsWith("http")
       ? query
       : "https://" + query;
@@ -60,45 +66,32 @@ function performSearch() {
 
 document.addEventListener("keydown", (e) => {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
-
-  // 1. Existing Input Logic
   if (e.target.tagName === "INPUT") {
     if (e.key === "Enter") performSearch();
     if (e.key === "Escape") {
       searchOverlay.classList.remove("active");
       document.body.classList.remove("search-active");
-      searchInput.value = "";
+      modal.classList.remove("active");
     }
     return;
   }
-
-  // 2. Numbers 1-9
   const keyNum = parseInt(e.key);
   if (!isNaN(keyNum) && keyNum > 0 && keyNum <= 9) {
     if (links[keyNum - 1]) window.location.href = links[keyNum - 1].url;
     return;
   }
-
-  // 3. Smart Search Capture (Fixes "lost first letter")
   if (e.key.length === 1 && e.key !== " ") {
-    // Prevent default so the letter isn't double-typed or lost
     e.preventDefault();
-
     searchOverlay.classList.add("active");
     document.body.classList.add("search-active");
-
-    // Manually inject the first key pressed
     searchInput.value = e.key;
-
-    // Focus and move cursor to the end
     setTimeout(() => {
       searchInput.focus();
       searchInput.setSelectionRange(1, 1);
-    }, 0);
+    }, 10);
   }
 });
 
-// Modal Logic
 document.getElementById("add-btn").onclick = () =>
   modal.classList.add("active");
 document.getElementById("cancel-btn").onclick = () =>
@@ -114,6 +107,17 @@ document.getElementById("save-btn").onclick = () => {
     modal.classList.remove("active");
   }
 };
+document.getElementById("save-bang-btn").onclick = () => {
+  const k = document.getElementById("bang-key").value.trim();
+  const u = document.getElementById("bang-url").value.trim();
+  if (k.startsWith("!") && u) {
+    customBangs[k] = u;
+    localStorage.setItem("myBangs", JSON.stringify(customBangs));
+    modal.classList.remove("active");
+  }
+};
 
-updateGreeting();
+const hour = new Date().getHours();
+document.getElementById("greeting").textContent =
+  hour < 12 ? "Morning" : hour < 18 ? "Afternoon" : "Evening";
 render();

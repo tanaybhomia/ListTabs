@@ -1,114 +1,146 @@
-/* --- Core Styles --- */
+/* Import Geist Sans, Mono, and Pixel variants */
+@import url("https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-sans/style.css");
+@import url("https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-mono/style.css");
+@import url("https://cdn.jsdelivr.net/npm/@vercel/font-geist-mono-pixel@1.0.1/style.css");
+
 :root {
-  --bg-color: #121212;
-  --text-color: #ffffff;
-  --accent-dim: rgba(255, 255, 255, 0.05);
-  --accent-bright: rgba(255, 255, 255, 0.1);
-  --modal-bg: #1e1e1e;
-  --input-bg: #2a2a2a;
+  --bg: #000000;
+  --fg: #ffffff;
+  --accents-1: #111111;
+  --accents-2: #333333;
+  --accents-3: #888888;
+  --modal-overlay: rgba(0, 0, 0, 0.85);
+  --font-pixel: "Geist Mono Pixel", monospace;
 }
 
 @media (prefers-color-scheme: light) {
   :root {
-    --bg-color: #fcfcfc;
-    --text-color: #111111;
-    --accent-dim: rgba(0, 0, 0, 0.03);
-    --accent-bright: rgba(0, 0, 0, 0.08);
-    --modal-bg: #ffffff;
-    --input-bg: #f0f0f0;
+    --bg: #ffffff;
+    --fg: #000000;
+    --accents-1: #fafafa;
+    --accents-2: #eaeaea;
+    --accents-3: #666666;
+    --modal-overlay: rgba(255, 255, 255, 0.85);
   }
 }
 
 body {
-  font-family:
-    -GeistSans, BlinkMacSystemFont, "Geist Sans", "Helvetica Neue", Arial,
-    sans-serif;
-  background-color: var(--bg-color);
-  color: var(--text-color);
   margin: 0;
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: "Geist Sans", sans-serif;
+  height: 100vh;
+  width: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
   overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.5s ease;
 }
 
-/* --- Visibility Logic --- */
-body.search-active .container,
-body.search-active .controls-area {
-  display: none; /* Hides everything when searching */
+/* --- Settings Hidden Trigger --- */
+.controls-area {
+  position: fixed;
+  top: 0;
+  right: 0;
+  padding: 30px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 100;
+}
+.controls-area:hover {
+  opacity: 1;
 }
 
+#add-btn {
+  background: transparent;
+  border: 1px solid var(--accents-2);
+  color: var(--accents-3);
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: var(--font-pixel);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+/* --- Main Link Grid --- */
 .container {
+  text-align: center;
   width: 100%;
-  max-width: 800px;
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  max-width: 1000px;
+  z-index: 1;
+  transition:
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.4s ease;
+}
+
+body.search-active .container {
+  opacity: 0;
+  transform: scale(0.95);
+  pointer-events: none;
 }
 
 header h1 {
-  font-size: 3.5rem;
-  font-weight: 200;
-  margin-bottom: 60px;
+  font-size: 5rem; /* Large aesthetic greeting */
+  font-weight: 400;
+  letter-spacing: -0.06em;
+  margin-bottom: 80px;
 }
 
 .link-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
-  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 80px; /* Wide spacing */
 }
 
 .link-item {
   text-decoration: none;
-  color: var(--text-color);
+  color: var(--fg);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  position: relative;
+  gap: 20px;
+  transition: transform 0.2s ease;
+}
+
+.link-item:hover {
+  transform: translateY(-8px);
 }
 
 .circle-number {
-  width: 42px;
-  height: 42px;
-  background-color: var(--accent-dim);
-  border: 1px solid var(--accent-bright);
-  border-radius: 50%;
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  color: var(--accents-3);
+  border: 1px solid var(--accents-2);
+  width: 50px;
+  height: 50px;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: var(--accents-1);
 }
 
 .link-text {
-  font-size: 0.95rem;
-  opacity: 0.8;
-}
-
-.controls-area {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-}
-
-#add-btn {
-  background: var(--accent-dim);
-  border: 1px solid var(--accent-bright);
-  color: var(--text-color);
-  padding: 8px 16px;
-  border-radius: 20px;
-  cursor: pointer;
+  font-size: 20px; /* Large, clear links */
+  font-weight: 500;
+  color: var(--fg);
+  letter-spacing: -0.02em;
 }
 
 /* --- Search Overlay --- */
 #search-overlay {
   display: none;
   position: fixed;
-  inset: 0;
-  background: var(--bg-color);
-  z-index: 2000;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+  z-index: 1000;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -118,36 +150,107 @@ header h1 {
 }
 
 #search-input {
-  width: 100%;
-  max-width: 600px;
+  width: 90%;
+  max-width: 800px;
   background: transparent;
   border: none;
-  border-bottom: 2px solid var(--accent-bright);
-  color: var(--text-color);
-  font-size: 3rem;
-  font-weight: 200;
+  border-bottom: 1px solid var(--accents-2);
+  color: var(--fg);
+  font-family: "Geist Sans", sans-serif;
+  font-size: 5rem;
   text-align: center;
   outline: none;
+  padding-bottom: 20px;
 }
 
-/* Modal Simple Styles */
+.search-hint {
+  font-family: var(--font-pixel);
+  font-size: 13px;
+  color: var(--accents-3);
+  margin-top: 40px;
+}
+
+/* --- Settings Modal --- */
 #add-modal {
   display: none;
   position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.8);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--modal-overlay);
+  backdrop-filter: blur(10px);
+  z-index: 2000;
   justify-content: center;
   align-items: center;
-  z-index: 3000;
 }
+
 #add-modal.active {
   display: flex;
 }
+
 .modal-content {
-  background: var(--modal-bg);
-  padding: 30px;
-  border-radius: 15px;
+  background: var(--bg);
+  border: 1px solid var(--accents-2);
+  padding: 40px;
+  border-radius: 12px;
+  width: 360px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 25px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+.modal-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal-content h3 {
+  font-family: var(--font-pixel);
+  font-size: 12px;
+  margin: 0;
+  text-transform: uppercase;
+  color: var(--accents-3);
+}
+
+.input-group {
+  display: flex;
+  gap: 8px;
+}
+
+input {
+  flex: 1;
+  background: var(--accents-1);
+  border: 1px solid var(--accents-2);
+  color: var(--fg);
+  padding: 12px;
+  border-radius: 6px;
+  font-family: "Geist Mono", monospace;
+  font-size: 14px;
+  outline: none;
+}
+
+.save-btn {
+  background: var(--fg);
+  color: var(--bg);
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-family: "Geist Sans", sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+#cancel-btn {
+  background: var(--accents-2);
+  color: var(--fg);
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--font-pixel);
+  font-size: 12px;
 }
