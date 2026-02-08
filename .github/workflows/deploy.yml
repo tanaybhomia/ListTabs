@@ -1,0 +1,22 @@
+name: Firefox Extension Deploy
+on:
+  push:
+    branches: [main] # This triggers every time you push to the main branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install web-ext
+        run: npm install --global web-ext
+
+      - name: Sign and Upload to Firefox
+        run: |
+          web-ext sign \
+            --api-key="${{ secrets.AMO_ISSUER }}" \
+            --api-secret="${{ secrets.AMO_SECRET }}" \
+            --channel=listed
+        # Change 'listed' to 'unlisted' if you only want it for personal use
