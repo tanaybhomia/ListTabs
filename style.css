@@ -239,8 +239,19 @@ input {
   }
 }
 
-#search-overlay.active {
-  display: flex;
+#search-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(18, 18, 18, 0.75); /* Dark translucent */
+  backdrop-filter: blur(20px); /* The "Apple" blur */
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 2000;
+  justify-content: center;
+  align-items: center;
 }
 
 .search-container {
@@ -273,4 +284,17 @@ input {
 .search-hint span {
   color: var(--text-color);
   font-weight: bold;
+}
+
+.link-item {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: reveal 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes reveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
