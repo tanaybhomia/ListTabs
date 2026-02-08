@@ -2,9 +2,14 @@
   "manifest_version": 3,
   "name": "Minimalist Startpage",
   "version": "1.0",
-  "description": "Instant minimalist tab page",
+  "description": "Instant minimalist tab page with smart search.",
   "chrome_url_overrides": {
     "newtab": "index.html"
   },
-  "permissions": ["storage"]
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "minimal-startpage@tanaybhomia.com",
+      "strict_min_version": "109.0"
+    }
+  }
 }
