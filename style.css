@@ -1,26 +1,45 @@
-/* Import Geist Sans, Mono, and Pixel variants */
-@import url("https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-sans/style.css");
-@import url("https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-mono/style.css");
-@import url("https://cdn.jsdelivr.net/npm/@vercel/font-geist-mono-pixel@1.0.1/style.css");
+/* GNOME ADWAITA THEME PALETTE 
+   Dark:  bg #242424 | accents #303030 / #3d3d3d
+   Light: bg #fafafa | accents #ffffff / #eaeaea
+*/
+
+@font-face {
+  font-family: "Geist Sans";
+  src: url("fonts/GeistSans-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  src: url("fonts/GeistMono-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Geist Mono Pixel";
+  src: url("fonts/GeistMonoPixel-Regular.woff2") format("woff2");
+}
 
 :root {
-  --bg: #000000;
+  /* Adwaita Dark */
+  --bg: #242424;
   --fg: #ffffff;
-  --accents-1: #111111;
-  --accents-2: #333333;
-  --accents-3: #888888;
-  --modal-overlay: rgba(0, 0, 0, 0.85);
+  --accents-1: #303030;
+  --accents-2: #3d3d3d;
+  --accents-3: #9a9996;
+  --destructive: #ed333b; /* Adwaita Red */
+  --modal-overlay: rgba(0, 0, 0, 0.6);
   --font-pixel: "Geist Mono Pixel", monospace;
+  --transition: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @media (prefers-color-scheme: light) {
   :root {
-    --bg: #ffffff;
-    --fg: #000000;
-    --accents-1: #fafafa;
-    --accents-2: #eaeaea;
-    --accents-3: #666666;
-    --modal-overlay: rgba(255, 255, 255, 0.85);
+    /* Adwaita Light */
+    --bg: #fafafa;
+    --fg: #2e3436;
+    --accents-1: #ffffff;
+    --accents-2: #d6d6d1;
+    --accents-3: #77767b;
+    --modal-overlay: rgba(255, 255, 255, 0.6);
   }
 }
 
@@ -36,7 +55,9 @@ body {
   align-items: center;
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
-  transition: background-color 0.5s ease;
+  transition:
+    background-color var(--transition),
+    color var(--transition);
 }
 
 /* --- Settings Hidden Trigger --- */
@@ -46,7 +67,7 @@ body {
   right: 0;
   padding: 30px;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity var(--transition);
   z-index: 100;
 }
 .controls-area:hover {
@@ -54,36 +75,40 @@ body {
 }
 
 #add-btn {
-  background: transparent;
+  background: var(--accents-1);
   border: 1px solid var(--accents-2);
-  color: var(--accents-3);
-  padding: 8px 14px;
-  border-radius: 4px;
+  color: var(--fg);
+  padding: 8px 16px;
+  border-radius: 8px; /* GNOME 45 style rounded buttons */
   cursor: pointer;
   font-family: var(--font-pixel);
   font-size: 11px;
   text-transform: uppercase;
+  transition: transform 0.1s ease;
+}
+#add-btn:active {
+  transform: scale(0.95);
 }
 
-/* --- Main Link Grid --- */
+/* --- Main Layout --- */
 .container {
   text-align: center;
   width: 100%;
-  max-width: 1000px;
+  max-width: 1100px;
   z-index: 1;
   transition:
-    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.4s ease;
+    transform var(--transition),
+    opacity var(--transition);
 }
 
 body.search-active .container {
   opacity: 0;
-  transform: scale(0.95);
+  transform: scale(0.96);
   pointer-events: none;
 }
 
 header h1 {
-  font-size: 5rem; /* Large aesthetic greeting */
+  font-size: 5rem;
   font-weight: 400;
   letter-spacing: -0.06em;
   margin-bottom: 80px;
@@ -92,10 +117,12 @@ header h1 {
 .link-grid {
   display: flex;
   justify-content: center;
-  gap: 80px; /* Wide spacing */
+  gap: 80px;
 }
 
+/* --- Link Items & Delete UI --- */
 .link-item {
+  position: relative;
   text-decoration: none;
   color: var(--fg);
   display: flex;
@@ -109,22 +136,47 @@ header h1 {
   transform: translateY(-8px);
 }
 
+.delete-btn {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 22px;
+  height: 22px;
+  background-color: var(--destructive);
+  color: white;
+  border-radius: 50%;
+  border: 3px solid var(--bg);
+  cursor: pointer;
+  display: none; /* Hidden by default */
+  z-index: 10;
+  font-family: var(--font-pixel);
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Show delete buttons only when settings modal is open */
+body.settings-active .delete-btn {
+  display: block;
+}
+
 .circle-number {
   font-family: var(--font-pixel);
-  font-size: 14px;
+  font-size: 16px;
   color: var(--accents-3);
   border: 1px solid var(--accents-2);
-  width: 50px;
-  height: 50px;
+  width: 56px;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: 14px; /* Adwaita squircle style */
   background: var(--accents-1);
 }
 
 .link-text {
-  font-size: 20px; /* Large, clear links */
+  font-size: 22px;
   font-weight: 500;
   color: var(--fg);
   letter-spacing: -0.02em;
@@ -134,10 +186,7 @@ header h1 {
 #search-overlay {
   display: none;
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background: var(--bg);
   z-index: 1000;
   flex-direction: column;
@@ -151,10 +200,10 @@ header h1 {
 
 #search-input {
   width: 90%;
-  max-width: 800px;
+  max-width: 900px;
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--accents-2);
+  border-bottom: 2px solid var(--accents-2);
   color: var(--fg);
   font-family: "Geist Sans", sans-serif;
   font-size: 5rem;
@@ -170,16 +219,13 @@ header h1 {
   margin-top: 40px;
 }
 
-/* --- Settings Modal --- */
+/* --- Adwaita Modal --- */
 #add-modal {
   display: none;
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background: var(--modal-overlay);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
   z-index: 2000;
   justify-content: center;
   align-items: center;
@@ -193,12 +239,12 @@ header h1 {
   background: var(--bg);
   border: 1px solid var(--accents-2);
   padding: 40px;
-  border-radius: 12px;
-  width: 360px;
+  border-radius: 24px; /* Modern GNOME dialog corners */
+  width: 380px;
   display: flex;
   flex-direction: column;
   gap: 25px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
 }
 
 .modal-section {
@@ -213,11 +259,12 @@ header h1 {
   margin: 0;
   text-transform: uppercase;
   color: var(--accents-3);
+  letter-spacing: 0.05em;
 }
 
 .input-group {
   display: flex;
-  gap: 8px;
+  gap: 10px;
 }
 
 input {
@@ -225,32 +272,37 @@ input {
   background: var(--accents-1);
   border: 1px solid var(--accents-2);
   color: var(--fg);
-  padding: 12px;
-  border-radius: 6px;
+  padding: 14px;
+  border-radius: 10px;
   font-family: "Geist Mono", monospace;
   font-size: 14px;
   outline: none;
+  transition: border-color 0.2s ease;
+}
+
+input:focus {
+  border-color: var(--accents-3);
 }
 
 .save-btn {
   background: var(--fg);
   color: var(--bg);
   border: none;
-  padding: 10px 15px;
-  border-radius: 6px;
+  padding: 10px 20px;
+  border-radius: 10px;
   font-weight: 600;
   font-family: "Geist Sans", sans-serif;
   cursor: pointer;
-  white-space: nowrap;
 }
 
 #cancel-btn {
-  background: var(--accents-2);
+  background: var(--accents-1);
   color: var(--fg);
-  border: none;
-  padding: 12px;
-  border-radius: 6px;
+  border: 1px solid var(--accents-2);
+  padding: 14px;
+  border-radius: 12px;
   cursor: pointer;
   font-family: var(--font-pixel);
   font-size: 12px;
+  text-transform: uppercase;
 }
