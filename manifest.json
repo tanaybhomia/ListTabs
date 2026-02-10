@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Minimalist Startpage",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A high-performance minimalist tab page with smart search navigation.",
   "chrome_url_overrides": {
     "newtab": "index.html"

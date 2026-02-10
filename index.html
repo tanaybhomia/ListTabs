@@ -6,55 +6,54 @@
     <title>New Tab</title>
     <link rel="stylesheet" href="style.css" />
   </head>
-  <body>
+  <body tabindex="-1">
+    <input
+      type="text"
+      autofocus
+      style="opacity: 0; position: absolute; pointer-events: none"
+    />
     <div class="controls-area">
-      <button id="add-btn">Settings</button>
+      <button id="add-btn" title="Add Shortcut">+</button>
     </div>
 
-    <div class="container">
+    <main class="container">
       <header>
-        <h1 id="greeting">Hello</h1>
+        <h1 id="greeting" class="fade-in">Evening</h1>
       </header>
       <div id="link-grid" class="link-grid"></div>
+    </main>
+
+    <div id="search-overlay">
+      <input
+        type="text"
+        id="search-input"
+        spellcheck="false"
+        autocomplete="off"
+        placeholder="Search..."
+      />
+      <div class="search-hint">Type to search or use !bangs</div>
     </div>
 
     <div id="add-modal">
-      <div class="modal-content">
+      <div class="modal-content fade-in-up">
         <div class="modal-section">
           <h3>Add Shortcut</h3>
-          <input type="text" id="input-title" placeholder="label" />
+          <input type="text" id="input-title" placeholder="Label" />
           <div class="input-group">
             <input type="url" id="input-url" placeholder="https://" />
             <button id="save-btn" class="save-btn">Save</button>
           </div>
         </div>
-
-        <div
-          style="height: 1px; background: var(--accents-2); width: 100%"
-        ></div>
-
+        <div class="modal-divider"></div>
         <div class="modal-section">
           <h3>Custom Bang</h3>
           <input type="text" id="bang-key" placeholder="!keyword" />
           <div class="input-group">
-            <input type="text" id="bang-url" placeholder="search url" />
+            <input type="text" id="bang-url" placeholder="Search URL" />
             <button id="save-bang-btn" class="save-btn">Save</button>
           </div>
         </div>
-
-        <button id="cancel-btn">Close Settings</button>
-      </div>
-    </div>
-
-    <div id="search-overlay">
-      <div class="search-container">
-        <input
-          type="text"
-          id="search-input"
-          placeholder="Search..."
-          spellcheck="false"
-        />
-        <div class="search-hint">Type to search or use !bangs</div>
+        <button id="cancel-btn">Close</button>
       </div>
     </div>
 

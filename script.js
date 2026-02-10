@@ -4,98 +4,98 @@ const defaultLinks = [
   { title: "GitHub", url: "https://github.com" },
 ];
 
-const defaultBangs = {
-  "!y": "https://www.youtube.com/results?search_query=",
-  "!gh": "https://github.com/search?q=",
-  "!w": "https://en.wikipedia.org/wiki/Special:Search?search=",
-};
-
 let links = JSON.parse(localStorage.getItem("myLinks")) || defaultLinks;
-let customBangs = JSON.parse(localStorage.getItem("myBangs")) || {};
-
 const grid = document.getElementById("link-grid");
-const modal = document.getElementById("add-modal");
 const searchOverlay = document.getElementById("search-overlay");
 const searchInput = document.getElementById("search-input");
+const modal = document.getElementById("add-modal");
 
 function render() {
   grid.innerHTML = "";
   links.forEach((link, index) => {
-    const isHotkey = index < 9;
-    const a = document.createElement("a");
-    a.className = "link-item";
-    a.href = link.url;
+    const item = document.createElement("div");
+    item.className = "link-item";
 
-    const circle = document.createElement("div");
-    circle.className = "circle-number";
-    circle.textContent = isHotkey ? index + 1 : "";
-    if (!isHotkey) circle.style.opacity = "0";
+    // Create Delete Button
+    const delBtn = document.createElement("div");
+    delBtn.className = "delete-btn";
+    delBtn.innerHTML = "×";
+    delBtn.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation(); // Stop click from triggering the link
+      links.splice(index, 1);
+      localStorage.setItem("myLinks", JSON.stringify(links));
+      render();
+    };
 
-    const span = document.createElement("span");
-    span.className = "link-text";
-    span.textContent = link.title;
+    // Link structure
+    const linkContent = `
+        <div class="circle-number">${index < 9 ? index + 1 : ""}</div>
+        <a href="${link.url}" class="link-text">${link.title}</a>
+    `;
 
-    a.append(circle, span);
-    grid.appendChild(a);
+    item.innerHTML = linkContent;
+    item.appendChild(delBtn);
+    grid.appendChild(item);
   });
 }
 
-function performSearch() {
-  const query = searchInput.value.trim();
-  if (!query) return;
-  const parts = query.split(" ");
-  const firstWord = parts[0].toLowerCase();
-  const searchTerm = parts.slice(1).join(" ");
-  const allBangs = { ...defaultBangs, ...customBangs };
+// Open Settings (Add Shortcut Modal)
+function openSettings() {
+  modal.classList.add("active");
+}
 
-  if (allBangs[firstWord]) {
-    window.location.href = searchTerm
-      ? allBangs[firstWord] + encodeURIComponent(searchTerm)
-      : new URL(allBangs[firstWord]).origin;
-    return;
-  }
-  const isURL = query.includes(".") && !query.includes(" ");
-  if (query.startsWith("http") || isURL) {
-    window.location.href = query.startsWith("http")
-      ? query
-      : "https://" + query;
-  } else {
-    window.location.href = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-  }
+// Close Settings
+function closeSettings() {
+  modal.classList.remove("active");
+}
+
+document.getElementById("add-btn").onclick = openSettings;
+document.getElementById("cancel-btn").onclick = closeSettings;
+
+function activateSearch(key) {
+  searchOverlay.classList.add("active");
+  searchInput.value = key;
+  searchInput.focus();
+  setTimeout(() => searchInput.focus(), 1);
 }
 
 document.addEventListener("keydown", (e) => {
-  if (e.metaKey || e.ctrlKey || e.altKey) return;
-  if (e.target.tagName === "INPUT") {
-    if (e.key === "Enter") performSearch();
+  // Prevent catching keys when typing in the modal
+  if (modal.classList.contains("active")) {
+    if (e.key === "Escape") closeSettings();
+    return;
+  }
+
+  if (searchOverlay.classList.contains("active")) {
     if (e.key === "Escape") {
       searchOverlay.classList.remove("active");
-      document.body.classList.remove("search-active");
-      modal.classList.remove("active");
+      searchInput.value = "";
+    }
+    if (e.key === "Enter") {
+      const q = searchInput.value.trim();
+      if (q)
+        window.location.href = `https://google.com/search?q=${encodeURIComponent(q)}`;
     }
     return;
   }
-  const keyNum = parseInt(e.key);
-  if (!isNaN(keyNum) && keyNum > 0 && keyNum <= 9) {
-    if (links[keyNum - 1]) window.location.href = links[keyNum - 1].url;
+
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+  // Hotkeys 1-9
+  const n = parseInt(e.key);
+  if (n > 0 && n <= 9 && links[n - 1]) {
+    window.location.href = links[n - 1].url;
     return;
   }
+
+  // Direct key catch for search
   if (e.key.length === 1 && e.key !== " ") {
     e.preventDefault();
-    searchOverlay.classList.add("active");
-    document.body.classList.add("search-active");
-    searchInput.value = e.key;
-    setTimeout(() => {
-      searchInput.focus();
-      searchInput.setSelectionRange(1, 1);
-    }, 10);
+    activateSearch(e.key);
   }
 });
 
-document.getElementById("add-btn").onclick = () =>
-  modal.classList.add("active");
-document.getElementById("cancel-btn").onclick = () =>
-  modal.classList.remove("active");
 document.getElementById("save-btn").onclick = () => {
   const t = document.getElementById("input-title").value;
   let u = document.getElementById("input-url").value;
@@ -104,20 +104,36 @@ document.getElementById("save-btn").onclick = () => {
     links.push({ title: t, url: u });
     localStorage.setItem("myLinks", JSON.stringify(links));
     render();
-    modal.classList.remove("active");
-  }
-};
-document.getElementById("save-bang-btn").onclick = () => {
-  const k = document.getElementById("bang-key").value.trim();
-  const u = document.getElementById("bang-url").value.trim();
-  if (k.startsWith("!") && u) {
-    customBangs[k] = u;
-    localStorage.setItem("myBangs", JSON.stringify(customBangs));
-    modal.classList.remove("active");
+    document.getElementById("input-title").value = "";
+    document.getElementById("input-url").value = "";
+    closeSettings(); // Auto close on save
   }
 };
 
+document.getElementById("save-bang-btn").onclick = () => {
+  const k = document.getElementById("bang-key").value;
+  const u = document.getElementById("bang-url").value;
+  if (k && u) {
+    // Logic for custom bangs can be added here
+    document.getElementById("bang-key").value = "";
+    document.getElementById("bang-url").value = "";
+  }
+};
+
+// Set Greeting
 const hour = new Date().getHours();
-document.getElementById("greeting").textContent =
-  hour < 12 ? "Morning" : hour < 18 ? "Afternoon" : "Evening";
+const greet = hour < 12 ? "Morning" : hour < 18 ? "Afternoon" : "Evening";
+document.getElementById("greeting").textContent = greet;
+
 render();
+// Clean up the previous fix if you added it
+window.onload = () => {
+  const trap = document.getElementById("focus-trap");
+  if (trap) {
+    trap.focus();
+    // Keep the trap clear so it doesn't store typed characters
+    trap.onblur = () => {
+      trap.value = "";
+    };
+  }
+};

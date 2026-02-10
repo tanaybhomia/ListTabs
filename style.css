@@ -1,45 +1,32 @@
-/* GNOME ADWAITA THEME PALETTE 
-   Dark:  bg #242424 | accents #303030 / #3d3d3d
-   Light: bg #fafafa | accents #ffffff / #eaeaea
-*/
-
+/* --- Global Variables & Fonts --- */
 @font-face {
   font-family: "Geist Sans";
   src: url("fonts/GeistSans-Regular.woff2") format("woff2");
 }
-
-@font-face {
-  font-family: "Geist Mono";
-  src: url("fonts/GeistMono-Regular.woff2") format("woff2");
-}
-
 @font-face {
   font-family: "Geist Mono Pixel";
   src: url("fonts/GeistMonoPixel-Regular.woff2") format("woff2");
 }
-
+body:focus {
+  outline: none;
+}
 :root {
-  /* Adwaita Dark */
-  --bg: #242424;
+  --bg: #1e1e1e;
   --fg: #ffffff;
-  --accents-1: #303030;
+  --accents-1: #2d2d2d;
   --accents-2: #3d3d3d;
   --accents-3: #9a9996;
-  --destructive: #ed333b; /* Adwaita Red */
-  --modal-overlay: rgba(0, 0, 0, 0.6);
+  --destructive: #ed333b;
   --font-pixel: "Geist Mono Pixel", monospace;
-  --transition: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @media (prefers-color-scheme: light) {
   :root {
-    /* Adwaita Light */
-    --bg: #fafafa;
+    --bg: #f6f5f4;
     --fg: #2e3436;
     --accents-1: #ffffff;
-    --accents-2: #d6d6d1;
+    --accents-2: #cdc7c2;
     --accents-3: #77767b;
-    --modal-overlay: rgba(255, 255, 255, 0.6);
   }
 }
 
@@ -54,217 +41,223 @@ body {
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  -webkit-font-smoothing: antialiased;
-  transition:
-    background-color var(--transition),
-    color var(--transition);
 }
 
-/* --- Settings Hidden Trigger --- */
+/* --- Animations --- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease forwards;
+}
+.fade-in-up {
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* --- Top Right Controls (Hidden until hover) --- */
 .controls-area {
   position: fixed;
   top: 0;
   right: 0;
   padding: 30px;
-  opacity: 0;
-  transition: opacity var(--transition);
-  z-index: 100;
+  z-index: 2000;
+  opacity: 0; /* Invisible by default */
+  transition: opacity 0.3s ease;
 }
+
+/* Show button when hovering over the top-right area */
 .controls-area:hover {
   opacity: 1;
 }
 
 #add-btn {
   background: var(--accents-1);
-  border: 1px solid var(--accents-2);
   color: var(--fg);
-  padding: 8px 16px;
-  border-radius: 8px; /* GNOME 45 style rounded buttons */
+  border: 1px solid var(--accents-2);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
   cursor: pointer;
-  font-family: var(--font-pixel);
-  font-size: 11px;
-  text-transform: uppercase;
-  transition: transform 0.1s ease;
-}
-#add-btn:active {
-  transform: scale(0.95);
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.2s,
+    transform 0.2s;
+  padding-bottom: 4px; /* Centers the + symbol visually */
 }
 
-/* --- Main Layout --- */
+#add-btn:hover {
+  background: var(--accents-2);
+  transform: scale(1.05);
+}
+
+/* --- Layout --- */
 .container {
   text-align: center;
-  width: 100%;
-  max-width: 1100px;
-  z-index: 1;
-  transition:
-    transform var(--transition),
-    opacity var(--transition);
-}
-
-body.search-active .container {
-  opacity: 0;
-  transform: scale(0.96);
-  pointer-events: none;
 }
 
 header h1 {
   font-size: 5rem;
-  font-weight: 400;
-  letter-spacing: -0.06em;
-  margin-bottom: 80px;
+  margin-bottom: 60px;
+  letter-spacing: -0.05em;
+  opacity: 0;
+  animation: fadeInUp 0.8s ease 0.1s forwards;
 }
 
 .link-grid {
   display: flex;
+  gap: 60px;
   justify-content: center;
-  gap: 80px;
 }
 
-/* --- Link Items & Delete UI --- */
 .link-item {
   position: relative;
-  text-decoration: none;
-  color: var(--fg);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
-  transition: transform 0.2s ease;
+  width: 80px;
+  opacity: 0;
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.link-item:hover {
-  transform: translateY(-8px);
+/* Staggered link entry */
+.link-item:nth-child(1) {
+  animation-delay: 0.2s;
 }
-
-.delete-btn {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  width: 22px;
-  height: 22px;
-  background-color: var(--destructive);
-  color: white;
-  border-radius: 50%;
-  border: 3px solid var(--bg);
-  cursor: pointer;
-  display: none; /* Hidden by default */
-  z-index: 10;
-  font-family: var(--font-pixel);
-  font-size: 12px;
-  line-height: 18px;
-  text-align: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+.link-item:nth-child(2) {
+  animation-delay: 0.3s;
 }
-
-/* Show delete buttons only when settings modal is open */
-body.settings-active .delete-btn {
-  display: block;
+.link-item:nth-child(3) {
+  animation-delay: 0.4s;
+}
+.link-item:nth-child(4) {
+  animation-delay: 0.5s;
 }
 
 .circle-number {
   font-family: var(--font-pixel);
-  font-size: 16px;
-  color: var(--accents-3);
+  background: var(--accents-1);
   border: 1px solid var(--accents-2);
-  width: 56px;
-  height: 56px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 14px; /* Adwaita squircle style */
-  background: var(--accents-1);
+  border-radius: 14px;
+  margin-bottom: 12px;
+  font-size: 16px;
+  color: var(--accents-3);
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s;
+}
+
+.link-item:hover .circle-number {
+  transform: translateY(-5px);
+  border-color: var(--accents-3);
+}
+
+/* --- Delete Button (Visible on Link Hover) --- */
+.delete-btn {
+  position: absolute;
+  top: -8px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  background: var(--destructive);
+  border: 2px solid var(--bg);
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  z-index: 10;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 18px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+
+  /* Hiding logic */
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.8);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+/* Show delete button when hovering over the specific link item */
+.link-item:hover .delete-btn {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
 }
 
 .link-text {
-  font-size: 22px;
+  text-decoration: none;
+  color: var(--fg);
+  font-size: 15px;
   font-weight: 500;
-  color: var(--fg);
-  letter-spacing: -0.02em;
 }
 
-/* --- Search Overlay --- */
-#search-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: var(--bg);
-  z-index: 1000;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-#search-overlay.active {
-  display: flex;
-}
-
-#search-input {
-  width: 90%;
-  max-width: 900px;
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid var(--accents-2);
-  color: var(--fg);
-  font-family: "Geist Sans", sans-serif;
-  font-size: 5rem;
-  text-align: center;
-  outline: none;
-  padding-bottom: 20px;
-}
-
-.search-hint {
-  font-family: var(--font-pixel);
-  font-size: 13px;
-  color: var(--accents-3);
-  margin-top: 40px;
-}
-
-/* --- Adwaita Modal --- */
+/* --- Settings Modal --- */
 #add-modal {
   display: none;
   position: fixed;
   inset: 0;
-  background: var(--modal-overlay);
-  backdrop-filter: blur(12px);
-  z-index: 2000;
+  z-index: 3000;
+  background: rgba(0, 0, 0, 0.6); /* Dim background */
+  backdrop-filter: blur(5px);
   justify-content: center;
   align-items: center;
 }
 
 #add-modal.active {
   display: flex;
+  animation: fadeIn 0.3s ease forwards;
 }
 
 .modal-content {
   background: var(--bg);
   border: 1px solid var(--accents-2);
-  padding: 40px;
-  border-radius: 24px; /* Modern GNOME dialog corners */
-  width: 380px;
+  padding: 35px;
+  border-radius: 28px;
+  width: 360px;
   display: flex;
   flex-direction: column;
-  gap: 25px;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+  gap: 24px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
 }
 
-.modal-section {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.modal-content h3 {
-  font-family: var(--font-pixel);
-  font-size: 12px;
-  margin: 0;
-  text-transform: uppercase;
+.modal-section h3 {
+  margin-top: 0;
+  font-size: 0.8rem;
   color: var(--accents-3);
+  text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .input-group {
   display: flex;
   gap: 10px;
+  align-items: center;
 }
 
 input {
@@ -272,12 +265,11 @@ input {
   background: var(--accents-1);
   border: 1px solid var(--accents-2);
   color: var(--fg);
-  padding: 14px;
-  border-radius: 10px;
-  font-family: "Geist Mono", monospace;
-  font-size: 14px;
+  padding: 12px 16px;
+  border-radius: 12px;
   outline: none;
-  transition: border-color 0.2s ease;
+  font-family: inherit;
+  transition: border-color 0.2s;
 }
 
 input:focus {
@@ -288,21 +280,68 @@ input:focus {
   background: var(--fg);
   color: var(--bg);
   border: none;
-  padding: 10px 20px;
-  border-radius: 10px;
-  font-weight: 600;
-  font-family: "Geist Sans", sans-serif;
+  padding: 12px 20px;
+  border-radius: 12px;
   cursor: pointer;
+  font-weight: 700;
+  transition: opacity 0.2s;
+}
+
+.save-btn:hover {
+  opacity: 0.9;
 }
 
 #cancel-btn {
   background: var(--accents-1);
-  color: var(--fg);
   border: 1px solid var(--accents-2);
+  color: var(--fg);
   padding: 14px;
-  border-radius: 12px;
+  border-radius: 14px;
   cursor: pointer;
-  font-family: var(--font-pixel);
-  font-size: 12px;
-  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.modal-divider {
+  height: 1px;
+  background: var(--accents-2);
+  width: 100%;
+}
+
+/* --- Search Overlay --- */
+#search-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--bg);
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+#search-overlay.active {
+  display: flex;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+#search-input {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--accents-2);
+  color: var(--fg);
+  font-size: 4.5rem;
+  text-align: center;
+  width: 80%;
+  outline: none;
+  padding-bottom: 10px;
+}
+#focus-trap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0; /* Invisible */
+  width: 0; /* Take up no space */
+  height: 0;
+  border: none;
+  pointer-events: none; /* Let clicks pass through it */
 }
